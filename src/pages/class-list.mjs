@@ -1,8 +1,12 @@
+import { CLASS_STORE_NAME, DB } from "../shared/db.mjs";
 import { basicStyle } from "../shared/style.mjs";
 
 export class ClassListPage extends HTMLElement {
   /** @type {ShadowRoot | undefined} */
   shadowRoot = undefined;
+
+  /** @type {import("../types.mjs").ClassData[]} */
+  classDatas = [];
 
   css = () => /* css */ `
     ${basicStyle}
@@ -40,7 +44,13 @@ export class ClassListPage extends HTMLElement {
       & > .list {
         height: 100%;
         width: 100%;
-        overflow: scroll;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        
+        & > class-list-item {
+          margin-bottom: 8px;
+        }
       }
     }
   `;
@@ -54,6 +64,13 @@ export class ClassListPage extends HTMLElement {
         <button class="add">➕</button>
       </div>
       <div class="list">
+        ${this.classDatas
+          .map(
+            (classData) => /* html */ `
+            <class-list-item class-data='${JSON.stringify(classData)}'></class-list-item>
+          `
+          )
+          .join("")}
       </div>
     </div>
   `;
@@ -63,7 +80,9 @@ export class ClassListPage extends HTMLElement {
     this.shadowRoot = this.attachShadow({ mode: "open" });
   }
 
-  connectedCallback() {
+  async connectedCallback() {
+    this.classDatas = await DB.getAll(CLASS_STORE_NAME);
+
     this.render();
   }
 
