@@ -1,3 +1,4 @@
+import { CLASS_STORE_NAME, DB } from "../shared/db.mjs";
 import { basicStyle } from "../shared/style.mjs";
 
 export class ClassEditPage extends HTMLElement {
@@ -43,7 +44,7 @@ export class ClassEditPage extends HTMLElement {
         width: 100%;
         display: grid;
         grid-template-columns: 100px 1fr;
-        grid-template-rows: repeat(1, 32px)
+        grid-template-rows: repeat(1, 32px);
         gap: 8px;
 
         & input {
@@ -81,5 +82,31 @@ export class ClassEditPage extends HTMLElement {
 
   render() {
     this.shadowRoot.innerHTML = this.html();
+
+    const saveButton = this.shadowRoot.querySelector("button.save");
+    saveButton.addEventListener("click", async () => {
+      const className = /** @type {HTMLInputElement} */ (
+        this.shadowRoot.getElementById("class-name")
+      ).value;
+      const classId = crypto.randomUUID();
+
+      /** @type {import("../types.mjs").ClassData} */
+      const data = {
+        id: classId,
+        name: className,
+      };
+      await DB.set(CLASS_STORE_NAME, data);
+
+      this.moveToList();
+    });
+
+    const moveToListButton = this.shadowRoot.querySelector("button.move-list");
+    moveToListButton.addEventListener("click", this.moveToList);
+  }
+
+  moveToList() {
+    const url = new URL(location.href);
+    url.hash = "#class-list";
+    location.href = url.href;
   }
 }
