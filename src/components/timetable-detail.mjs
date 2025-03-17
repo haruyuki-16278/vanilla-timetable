@@ -93,7 +93,7 @@ export class TimetableDetailComponent extends HTMLElement {
           ? /* html */ `<select id="class-select">${classDatas.map(
               (classData) => /* html */ `
                   <option value="${classData.id}" ${
-                classData.id === this.classData.id ? "selected" : ""
+                classData.id === this.classData?.id ? "selected" : ""
               }>${classData.name}</option>
               `
             )}</select>`

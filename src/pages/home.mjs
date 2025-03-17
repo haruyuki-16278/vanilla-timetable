@@ -5,6 +5,7 @@ export class HomePage extends HTMLElement {
   shadowRoot = undefined;
 
   dayperiod = undefined;
+  renderId = undefined;
 
   css = () => /* css */ `
     ${basicStyle}
@@ -28,7 +29,7 @@ export class HomePage extends HTMLElement {
   html = () => /* html */ `
     <style>${this.css()}</style>
     <div class="home">
-      <timetable-component></timetable-component>
+      <timetable-component render-id="${this.renderId}"></timetable-component>
       <timetable-detail dayperiod="${this.dayperiod ?? ""}"></timetable-detail>
     </div>
   `;
@@ -42,8 +43,11 @@ export class HomePage extends HTMLElement {
     this.render();
 
     this.shadowRoot.addEventListener("tableItemClick", (event) => {
-      console.log(event.detail);
       this.dayperiod = event.detail;
+      this.render();
+    });
+    this.shadowRoot.addEventListener("tableItemChange", () => {
+      this.renderId = crypto.randomUUID();
       this.render();
     });
   }
