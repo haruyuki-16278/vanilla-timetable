@@ -16,6 +16,10 @@ export class HomePage extends HTMLElement {
       & > timetable-component {
         height: 60%;
       }
+
+      & > timetable-detail {
+        height: 40%;
+      }
     }
   `;
 
@@ -23,6 +27,7 @@ export class HomePage extends HTMLElement {
     <style>${this.css()}</style>
     <div class="home">
       <timetable-component></timetable-component>
+      <timetable-detail></timetable-detail>
     </div>
   `;
 
